@@ -27,7 +27,7 @@ var (
 	verbose  *bool   = flag.BoolP("verbose", "v", false, "turn on verbose logging")
 	debug    *bool   = flag.BoolP("debug", "d", false, "turn on debug logging")
 	secure   *bool   = flag.Bool("secure", true, "send as secure")
-	target   *string = flag.StringP("target", "t", "", "comma separated list, fqhn:port[,fqhn:port[,...]]")
+	broker   *string = flag.StringP("broker", "b", "", "fully.qualified.broker:port")
 	msgfile  *string = flag.StringP("file", "f", "", "file name of data to send to ibi")
 )
 
@@ -48,8 +48,8 @@ func main() {
 		os.Exit(0)
 	}
 
-	// need a target and a queue
-	if *target == "" || *queue == "" {
+	// need a broker and a queue
+	if *broker == "" || *queue == "" {
 		fmt.Println("Need -t and -q")
 		flag.Usage()
 		os.Exit(1)
@@ -71,7 +71,7 @@ func main() {
 	// SetLogFile("/tmp/" + nameString + ".out")
 	conn.SetMsgHeader(*queue, "me", nameString, verString, *format)
 
-	err := conn.Connect(*protocol, "STOMP", *target)
+	err := conn.Connect(*protocol, "STOMP", *broker)
 	if err != nil {
 		fmt.Printf("ERROR: Connect returned error: %+v\n", err)
 		os.Exit(1)
